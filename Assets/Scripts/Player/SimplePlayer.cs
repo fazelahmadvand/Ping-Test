@@ -22,6 +22,7 @@ public class SimplePlayer : NetworkBehaviour
     [SerializeField] private Transform tankShootHole;
     [SerializeField] private SimpleBullet bulletPre;
 
+
     public override void OnStartAuthority()
     {
         base.OnStartAuthority();
@@ -36,11 +37,11 @@ public class SimplePlayer : NetworkBehaviour
     {
         if (hasAuthority)
         {
-            CmdChangePosition();
+            CmdChangePosition(InputManager.Instance.MousePos);
 
             if (Input.GetMouseButtonDown(0))
             {
-                RpcChangePosition();
+                CmdChangeAgentPos(InputManager.Instance.MousePos);
             }
 
             if (Input.GetKeyDown(KeyCode.Space))
@@ -49,14 +50,14 @@ public class SimplePlayer : NetworkBehaviour
             }
 
         }
-        
+
 
     }
 
 
     private void OnPositionChange(Vector3 oldVector, Vector3 newVector)
     {
-        FixRotation(pos);
+        FixRotation(newVector);
     }
 
 
@@ -69,17 +70,22 @@ public class SimplePlayer : NetworkBehaviour
     }
 
     [Command]
-    private void CmdChangePosition()
+    private void CmdChangePosition(Vector3 position)
     {
-        pos = InputManager.Instance.MousePos;
+        pos = position;
+    }
+
+    [Command]
+    private void CmdChangeAgentPos(Vector3 position)
+    {
+        RpcChangeAgentPos(position);
 
     }
 
-
     [ClientRpc]
-    private void RpcChangePosition()
+    private void RpcChangeAgentPos(Vector3 position)
     {
-        agent.SetDestination(pos);
+        agent.SetDestination(position);
     }
 
 

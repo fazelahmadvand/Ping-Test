@@ -20,6 +20,8 @@ public class HUDManager : Singlton<HUDManager>
 
     [Space]
     [Header("Client")]
+    [SerializeField] private Button localClientBtn;
+
     [SerializeField] private InputField serverAddressTxt;
     [SerializeField] private InputField serverPortTxt;
     [SerializeField] private Button clientBtn;
@@ -45,6 +47,13 @@ public class HUDManager : Singlton<HUDManager>
         hostBtn.onClick.AddListener(() =>
         {
             Manager.Instance.NetworkManager.StartHost();
+            Hide();
+        });
+
+
+        localClientBtn.onClick.AddListener(() =>
+        {
+            Manager.Instance.NetworkManager.StartClient();
             Hide();
         });
 
