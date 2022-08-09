@@ -26,6 +26,7 @@ public class InputManager : Singlton<InputManager>
         {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             bool isHit = ground.Raycast(ray, out var hit, Mathf.Infinity);
+            Debug.Log("Called");
             if (isHit)
                 return hit.point;
             return Vector3.zero;

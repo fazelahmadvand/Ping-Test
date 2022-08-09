@@ -8,7 +8,6 @@ using UnityEngine.AI;
 public class SimplePlayer : NetworkBehaviour
 {
     [SerializeField] [SyncVar(hook = nameof(OnPositionChange))] private Vector3 pos;
-    [SerializeField] [SyncVar(hook = nameof(OnRotationChange))] private Vector3 rot;
 
 
     [Space]
@@ -35,27 +34,33 @@ public class SimplePlayer : NetworkBehaviour
 
     private void Update()
     {
-        if (!hasAuthority) return;
-
-        if (Input.GetMouseButtonDown(0))
-            CmdChangePosition();
-        
-        CmdChangeRotation();
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (hasAuthority)
         {
-            CmdShoot();
+            CmdChangePosition();
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                RpcChangePosition();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                CmdShoot();
+            }
+
         }
+        
 
     }
 
 
     private void OnPositionChange(Vector3 oldVector, Vector3 newVector)
     {
-        agent.SetDestination(newVector);
+        FixRotation(pos);
     }
 
-    private void OnRotationChange(Vector3 oldVector, Vector3 newVector)
+
+    private void FixRotation(Vector3 newVector)
     {
         var diff = newVector - transform.position;
         diff.y = 0;
@@ -67,19 +72,25 @@ public class SimplePlayer : NetworkBehaviour
     private void CmdChangePosition()
     {
         pos = InputManager.Instance.MousePos;
+
     }
 
-    [Command]
-    private void CmdChangeRotation()
+
+    [ClientRpc]
+    private void RpcChangePosition()
     {
-        rot = InputManager.Instance.MousePos;
+        agent.SetDestination(pos);
     }
+
 
     [Command]
     private void CmdShoot()
     {
         var bullet = Instantiate(bulletPre);
         bullet.transform.SetPositionAndRotation(shootHole.position, shootHole.rotation);
+        RpcShoot();
+        Debug.Log("Pos=>" + pos);
+        Debug.Log("Shoot");
 
     }
 
@@ -88,6 +99,8 @@ public class SimplePlayer : NetworkBehaviour
     {
         var bullet = Instantiate(bulletPre);
         bullet.transform.SetPositionAndRotation(shootHole.position, shootHole.rotation);
+        Debug.Log("Pos=>" + pos);
+        Debug.Log("Shoot");
 
     }
 

@@ -28,7 +28,6 @@ public class Manager : Singlton<Manager>
 
     private void Start()
     {
-        GetArgs();
         if (RunAsServer)
         {
 #if !UNITY_EDITOR
