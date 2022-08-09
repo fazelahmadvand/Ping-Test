@@ -19,13 +19,14 @@ public class HUDManager : Singlton<HUDManager>
 
 
     [Space]
-    [Header("CLient")]
+    [Header("Client")]
     [SerializeField] private InputField serverAddressTxt;
     [SerializeField] private InputField serverPortTxt;
     [SerializeField] private Button clientBtn;
 
-
-
+    [Space]
+    [Header("Game Info")]
+    [SerializeField] private Text pingTxt;
 
 
     private void Start()
@@ -53,6 +54,7 @@ public class HUDManager : Singlton<HUDManager>
             string portStr = serverPortTxt.text;
             ushort port = ushort.Parse(portStr);
             Manager.Instance.StartClient(address, port);
+            Hide();
 
         });
 
@@ -65,6 +67,9 @@ public class HUDManager : Singlton<HUDManager>
     private void Show() => connectHelperRoot.SetActive(true);
     private void Hide() => connectHelperRoot.SetActive(false);
 
-
+    public void ShowPing(string ping)
+    {
+        pingTxt.text = ping;
+    }
 
 }
