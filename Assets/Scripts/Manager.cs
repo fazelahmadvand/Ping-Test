@@ -41,6 +41,10 @@ public class Manager : Singlton<Manager>
         }
     }
 
+    private void Update()
+    {
+        HUDManager.Instance.ShowPing((NetworkTime.rtt * 1000).ToString("F0"));
+    }
     public void StartServer()
     {
         GetArgs();

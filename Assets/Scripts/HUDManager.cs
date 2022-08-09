@@ -69,7 +69,7 @@ public class HUDManager : Singlton<HUDManager>
 
     public void ShowPing(string ping)
     {
-        pingTxt.text = ping;
+        pingTxt.text = "Ping: " + ping;
     }
 
 }
